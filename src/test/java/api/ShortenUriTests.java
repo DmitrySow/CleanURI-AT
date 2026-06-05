@@ -1,12 +1,10 @@
 package api;
 
-import api.cleanuri.RequestBody;
-import api.cleanuri.ResponseBody;
-import api.cleanuri.ResponseBodyWithError;
+import api.cleanuri.v1_shorten_Request;
+import api.cleanuri.v1_shorten_Response;
+import api.cleanuri.v1_shorten_ResponseWithError;
 import api.cleanuri.Specifications;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
@@ -24,87 +22,87 @@ public class ShortenUriTests {
             "https://google.com/, https://cleanuri.com/AqJYaW",
             "https://metanit.com/ , https://cleanuri.com/R9NX4j"})
     @DisplayName("Корректный ответ от при валидном url")
-    public void checkValidUri(String testUrl, String shortTestUrl) {
+    public void validUrlTest(String testUrl, String shortTestUrl) {
         Specifications.instSpec(Specifications.reqSpec(url), Specifications.resSpec200());
 
-        RequestBody requestBody = new RequestBody(testUrl);
+        v1_shorten_Request v1shortenRequest = new v1_shorten_Request(testUrl);
 
-        ResponseBody responseBody = given()
+        v1_shorten_Response v1shortenResponse = given()
                 .when()
-                .formParam("url", requestBody.getUrl())
+                .formParam("url", v1shortenRequest.getUrl())
                 .post("/api/v1/shorten")
                 .then()
                 .log()
                 .all()
                 .extract()
                 .body()
-                .as(ResponseBody.class);
+                .as(v1_shorten_Response.class);
 
-        assertThat(responseBody.getResultUrl()).isEqualTo(shortTestUrl);
+        assertThat(v1shortenResponse.getResult_url()).isEqualTo(shortTestUrl);
     }
 
     @ParameterizedTest
     @EmptySource
     @DisplayName("Запрос с пустым телом")
-    public void emptyRequestBody(String testUrl) {
+    public void emptyUrlTest(String testUrl) {
         Specifications.instSpec(Specifications.reqSpec(url), Specifications.resSpec400());
 
-        RequestBody requestBody = new RequestBody(testUrl);
+        v1_shorten_Request v1shortenRequest = new v1_shorten_Request(testUrl);
 
-        ResponseBodyWithError responseBodyWithError = given()
+        v1_shorten_ResponseWithError v1shortenResponseWithError = given()
                 .when()
-                .formParam("url", requestBody.getUrl())
+                .formParam("url", v1shortenRequest.getUrl())
                 .post("/api/v1/shorten")
                 .then()
                 .log()
                 .all()
                 .extract()
                 .body()
-                .as(ResponseBodyWithError.class);
+                .as(v1_shorten_ResponseWithError.class);
 
-        assertThat(responseBodyWithError.getError()).isEqualTo("API Error: After sanitization URL is empty");
+        assertThat(v1shortenResponseWithError.getError()).isEqualTo("API Error: After sanitization URL is empty");
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"https:/", "//help.steampowered.c", "sdjfllfdkgjnknf"})
     @DisplayName("Передача не-url строки")
-    public void postNotValidUrl(String testUrl) {
+    public void notValidUrlTest(String testUrl) {
         Specifications.instSpec(Specifications.reqSpec(url), Specifications.resSpec400());
 
-        RequestBody requestBody = new RequestBody(testUrl);
+        v1_shorten_Request v1shortenRequest = new v1_shorten_Request(testUrl);
 
-        ResponseBodyWithError responseBodyWithError = given()
+        v1_shorten_ResponseWithError v1shortenResponseWithError = given()
                 .when()
-                .formParam("url", requestBody.getUrl())
+                .formParam("url", v1shortenRequest.getUrl())
                 .post("/api/v1/shorten")
                 .then()
                 .log()
                 .all()
                 .extract()
                 .body()
-                .as(ResponseBodyWithError.class);
+                .as(v1_shorten_ResponseWithError.class);
 
-        assertThat(responseBodyWithError.getError()).isEqualTo("API Error: URL is invalid (check #1)");
+        assertThat(v1shortenResponseWithError.getError()).isEqualTo("API Error: URL is invalid (check #1)");
     }
 
 
     @ParameterizedTest
     @ValueSource(strings = {"https://www.yout ube.com/", "https:// google.com/", "https://metanit.com/"})
     @DisplayName("Ошибка при передаче url с пробелом")
-    public void postUrlWithSpace(String testUrl) {
+    public void urlWithSpaceTest(String testUrl) {
         Specifications.instSpec(Specifications.reqSpec(url), Specifications.resSpec400());
 
-        RequestBody requestBody = new RequestBody(testUrl);
+        v1_shorten_Request v1shortenRequest = new v1_shorten_Request(testUrl);
 
-        ResponseBody responseBody = given()
+        v1_shorten_Response v1shortenResponse = given()
                 .when()
-                .formParam("url", requestBody.getUrl())
+                .formParam("url", v1shortenRequest.getUrl())
                 .post("/api/v1/shorten")
                 .then()
                 .log()
                 .all()
                 .extract()
                 .body()
-                .as(ResponseBody.class);
+                .as(v1_shorten_Response.class);
     }
 }
