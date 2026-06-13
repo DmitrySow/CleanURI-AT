@@ -43,7 +43,7 @@ public class ShortenUriTests {
 
         Facade facade = new Facade(400);
 
-        assertThat(facade.getShortenUrlError("")).isEqualTo("API Error: After sanitization URL is empty");
+        assertThat(facade.getShortenUrlError(testUrl)).isEqualTo("API Error: URL is invalid (check #1)");
     }
 
 
@@ -54,6 +54,6 @@ public class ShortenUriTests {
 
         Facade facade = new Facade(400);
 
-        assertThat(facade.getShortenUrlError("")).isEqualTo("API Error: After sanitization URL is empty");
+        assertThat(facade.getShortenUrlError(testUrl)).isEqualTo("API Error: After sanitization URL is empty");
     }
 }
