@@ -20,9 +20,9 @@ public class ShortenUriTests {
     @DisplayName("Корректный ответ от при валидном url")
     public void validUrlTest(String testUrl, String shortTestUrl) {
 
-        Facade facade = new Facade(200);
+        Facade facade = new Facade();
 
-        assertThat(facade.getShortenUrl(testUrl)).isEqualTo(shortTestUrl);
+        assertThat(facade.shortenUrlSuccess(testUrl)).isEqualTo(shortTestUrl);
 
     }
 
@@ -31,9 +31,9 @@ public class ShortenUriTests {
     @DisplayName("Запрос с пустым телом")
     public void emptyUrlTest(String testUrl) {
 
-        Facade facade = new Facade(400);
+        Facade facade = new Facade();
 
-        assertThat(facade.getShortenUrlError("")).isEqualTo("API Error: After sanitization URL is empty");
+        assertThat(facade.ShortenUrlError("")).isEqualTo("API Error: After sanitization URL is empty");
     }
 
     @ParameterizedTest
@@ -41,9 +41,9 @@ public class ShortenUriTests {
     @DisplayName("Передача не-url строки")
     public void notValidUrlTest(String testUrl) {
 
-        Facade facade = new Facade(400);
+        Facade facade = new Facade();
 
-        assertThat(facade.getShortenUrlError(testUrl)).isEqualTo("API Error: URL is invalid (check #1)");
+        assertThat(facade.ShortenUrlError(testUrl)).isEqualTo("API Error: URL is invalid (check #1)");
     }
 
 
@@ -52,8 +52,8 @@ public class ShortenUriTests {
     @DisplayName("Ошибка при передаче url с пробелом")
     public void urlWithSpaceTest(String testUrl) {
 
-        Facade facade = new Facade(400);
+        Facade facade = new Facade();
 
-        assertThat(facade.getShortenUrlError(testUrl)).isEqualTo("API Error: After sanitization URL is empty");
+        assertThat(facade.ShortenUrlError(testUrl)).isEqualTo("API Error: After sanitization URL is empty");
     }
 }

@@ -1,37 +1,32 @@
 package api.cleanuri;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import lombok.NoArgsConstructor;
-
 import static io.restassured.RestAssured.given;
 
 public class Service extends AbstractService {
 
-    public String v1_shorten_ep; //ЭП конкретного сервиса то есть куда кидаю запрос
+    private String v1ShortenEp; //ЭП конкретного сервиса то есть куда кидаю запрос
 
     public Service() {
-        super();
-        this.v1_shorten_ep  = "/api/v1/shorten";
+        super("https://cleanuri.com");
+        this.v1ShortenEp = "/api/v1/shorten";
     }
 
-    public Object v1_shorten_res_post (String testUrl) {
+    @Step("Отправка POST-запроса со значением {testUrl}")
+    public Response v1ShortenResPost(String testUrl) {
 
         Response response = given()
                 .spec(getReqSpec()) //установил наследственную спеку запроса
                 .when()
                 .formParam("url",testUrl) //положил параметр, который отдам в теле запроса
-                .post(v1_shorten_ep) //тип метода и ЭП куда кидаю
+                .post(v1ShortenEp) //тип метода и ЭП куда кидаю
                 .then()
                 .log()
                 .all()
                 .extract()
-                .response();
+                .response();//верну полностью весь ответ
 
-        if(response.statusCode() == 200) {
-            return response.as(v1_shorten_Response.class);
-        } else {
-            return response.as(v1_shorten_ResponseWithError.class);
-        }
-
+        return response;
     }
 }

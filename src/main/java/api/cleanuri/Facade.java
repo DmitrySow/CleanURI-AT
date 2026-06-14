@@ -1,31 +1,42 @@
 package api.cleanuri;
 
+import io.qameta.allure.Step;
 import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.response.Response;
 import io.restassured.specification.ResponseSpecification;
 
 public class Facade {
 
     private Service service;
-    private ResponseSpecification resSpec;
+    private ResponseSpecification resSpec200;
+    private ResponseSpecification resSpec400;
 
-    public Facade(Integer statusCode) {
+    public Facade() {
         this.service = new Service();
-        this.resSpec = new ResponseSpecBuilder()
-                .expectStatusCode(statusCode)
+        this.resSpec200 = new ResponseSpecBuilder()
+                .expectStatusCode(200)
+                .build();
+        this.resSpec400 = new ResponseSpecBuilder()
+                .expectStatusCode(400)
                 .build();
     }
 
-    public String getShortenUrl(String testUrl) {
+    @Step("Получить тело успешного ответа")
+    public String shortenUrlSuccess(String testUrl) {
 
-        v1_shorten_Response response = (v1_shorten_Response)service.v1_shorten_res_post(testUrl);
+        Response response = service.v1ShortenResPost(testUrl);
 
-        return response.getResult_url();
+        v1_shorten_Response body = response.as(v1_shorten_Response.class);
+
+        return body.getResult_url();
     }
 
-    public String getShortenUrlError(String testUrl) {
+    public String ShortenUrlError(String testUrl) {
 
-        v1_shorten_ResponseWithError response = (v1_shorten_ResponseWithError)service.v1_shorten_res_post(testUrl);
+        Response response = service.v1ShortenResPost(testUrl);
 
-        return response.getError();
+        v1_shorten_ResponseWithError body = response.as(v1_shorten_ResponseWithError.class);
+
+        return body.getError();
     }
 }
