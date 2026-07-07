@@ -11,9 +11,9 @@ public abstract class AbstractService {
     private RequestSpecification reqSpec; //все запросы к приложению содержат общие штуки. Урл и спеку запроса поэтому сюда, а отдельные сервисы уже унаследуют
     private String baseUrl;
 
-    public AbstractService() {
+    public AbstractService(String baseUrl) {
 
-        this.baseUrl = "https://cleanuri.com";
+        this.baseUrl = baseUrl;
 
         this.reqSpec =  new RequestSpecBuilder()
                 .setBaseUri(baseUrl)
